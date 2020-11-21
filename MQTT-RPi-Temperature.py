@@ -1,9 +1,9 @@
 import paho.mqtt.client as mqtt
-# import subprocess  # skipcq: BAN-B404
 import logging
 import json
 import os
 import re
+import time
 
 
 def temperature_of_raspberry_pi():
@@ -16,6 +16,12 @@ def temperature_of_raspberry_pi():
     return cpu_temp
 
 
+def read_credentials():
+    with open('include/credentials.json', 'r') as f:
+        credentials = json.load(f)
+    return credentials
+
+
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -26,8 +32,7 @@ if __name__ == '__main__':
         datefmt="%H:%M:%S")
 
     logging.info('Reading Credentials File')
-    with open('include/credentials.json', 'r') as f:
-        credentials = json.load(f)
+    credentials = read_credentials()
 
     broker_address = credentials["broker_address"]
     port = credentials["port"]
@@ -44,10 +49,14 @@ if __name__ == '__main__':
         user, password=password)  # set username and password
     mqtt_client.connect(broker_address, port=port)
 
-    temp_pi = temperature_of_raspberry_pi()
-    logging.info('Temperature: '+str(temp_pi))
-    if temp_pi > 0:
-        mqtt_client.publish(topic=credentials['feed_topic'], payload=temp_pi)
+    while(1):
+        credentials = read_credentials()
+        time.sleep(int(credentials['sleep_time']))
+        temp_pi = temperature_of_raspberry_pi()
+        logging.info('Temperature: '+str(temp_pi))
+        if temp_pi > 0:
+            mqtt_client.publish(
+                topic=credentials['feed_topic'], payload=temp_pi)
 
     # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()
