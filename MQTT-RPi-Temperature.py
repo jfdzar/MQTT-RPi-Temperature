@@ -45,7 +45,7 @@ if __name__ == '__main__':
     mqtt_client.connect(broker_address, port=port)
 
     temp_pi = temperature_of_raspberry_pi()
-    logging.info('Temperature: '+temp_pi)
+    logging.info('Temperature: '+str(temp_pi))
     if temp_pi > 0:
         mqtt_client.publish(topic=credentials['feed_topic'], payload=temp_pi)
 
