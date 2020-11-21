@@ -12,14 +12,16 @@ def temperature_of_raspberry_pi():
         cpu_temp = float(re.findall(r'\d+\.\d+', cpu_temp)[0])
     except Exception as e:
         cpu_temp = -1
-        logging.error("Error Reading Temperature\n" + e)
+        logging.error("Error Reading Temperature")
     return cpu_temp
 
 
 if __name__ == '__main__':
 
     logging.basicConfig(
-        format='%(asctime)s: %(message)',
+        format="%(asctime)s: %(message)s",
+        # filemode='a',
+        # filename='HA-Watch.log',
         level=logging.INFO,
         datefmt="%H:%M:%S")
 
