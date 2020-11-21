@@ -47,16 +47,17 @@ if __name__ == '__main__':
     mqtt_client = mqtt.Client()
     mqtt_client.username_pw_set(
         user, password=password)  # set username and password
-    mqtt_client.connect(broker_address, port=port)
 
     while(1):
-        credentials = read_credentials()
-        time.sleep(int(credentials['sleep_time']))
+        mqtt_client.connect(broker_address, port=port)
         temp_pi = temperature_of_raspberry_pi()
         logging.info('Temperature: '+str(temp_pi))
         if temp_pi > 0:
             mqtt_client.publish(
                 topic=credentials['feed_topic'], payload=temp_pi)
+        mqtt_client.disconnect()
+        credentials = read_credentials()
+        time.sleep(int(credentials['sleep_time']))
 
     # deepcode ignore replace~exit~sys.exit: <please specify a reason of ignoring this>
     exit()
