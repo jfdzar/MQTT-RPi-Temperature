@@ -23,6 +23,7 @@ if __name__ == '__main__':
         level=logging.INFO,
         datefmt="%H:%M:%S")
 
+    logging.info('Reading Credentials File')
     with open('include/credentials.json', 'r') as f:
         credentials = json.load(f)
 
@@ -31,12 +32,18 @@ if __name__ == '__main__':
     user = credentials["user"]
     password = credentials["password"]
 
+    logging.info('Connecting with following parameters')
+    logging.info(broker)
+    logging.info(port)
+    logging.info(user)
+
     mqtt_client = mqtt.Client()
     mqtt_client.username_pw_set(
         user, password=password)  # set username and password
     mqtt_client.connect(broker_address, port=port)
 
     temp_pi = temperature_of_raspberry_pi()
+    logging.info('Temperature: '+temp_pi)
     if temp_pi > 0:
         mqtt_client.publish(topic=credentials['feed_topic'], payload=temp_pi)
 
