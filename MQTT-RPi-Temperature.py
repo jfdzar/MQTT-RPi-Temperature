@@ -33,7 +33,7 @@ if __name__ == '__main__':
     password = credentials["password"]
 
     logging.info('Connecting with following parameters')
-    logging.info(broker)
+    logging.info(broker_address)
     logging.info(port)
     logging.info(user)
 
